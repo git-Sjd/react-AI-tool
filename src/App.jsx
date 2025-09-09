@@ -30,7 +30,7 @@ function App() {
     let rawData = response.candidates[0].content.parts[0].text;
     rawData = rawData.split("* ");
     let refinedData = rawData.map((item, index) => item.trim());
-    console.log("refinedData: -->", refinedData);
+    // console.log("refinedData: -->", refinedData);
     setResult(refinedData)
   }
 
@@ -48,7 +48,7 @@ function App() {
               {
                 result && result.map((item, index) =>
                   <li className='text-left ml-2 mt-2'>
-                    <Answers ans={item} key={index + 1} />
+                    <Answers ans={item} index={index} />
                   </li>)
               }
             </ul>
