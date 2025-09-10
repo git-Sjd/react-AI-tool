@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import "./App.css";
 import { URL } from "./utils/constant";
 import Answers from "./components/Answers";
@@ -7,6 +7,7 @@ function App() {
   const [question, setQuestion] = useState("");
   const [result, setResult] = useState([]);
   const [recentHistory, setRecentHistory] = useState([]);
+  const scrollToAnswer = useRef();
 
   const payload = {
     contents: [
@@ -22,7 +23,7 @@ function App() {
 
   const askQuestion = async () => {
     if (!question) {
-      return false
+      return false;
     }
 
     if (localStorage.getItem("history")) {
@@ -53,21 +54,25 @@ function App() {
       { type: "qsn", qsnText: question },
       { type: "ans", ansText: refinedData },
     ]);
-    setQuestion('');
+    setQuestion("");
+
+    setTimeout(() => {
+      scrollToAnswer.current.scrollTop = scrollToAnswer.current.scrollHeight;
+    }, 1000);
   };
 
   const clearHistory = () => {
-    localStorage.clear()
-    setRecentHistory([])
-  }
+    localStorage.clear();
+    setRecentHistory([]);
+  };
 
   const isEnterKey = (event) => {
-    console.log("--->", event.key)
+    console.log("--->", event.key);
     if (event.key == "Enter") {
       askQuestion();
       // setQuestion()
     }
-  }
+  };
 
   // console.log("-->", result);
 
@@ -98,7 +103,7 @@ function App() {
       </div>
 
       <div className="col-span-4 p-10">
-        <div className="container h-130 overflow-scroll">
+        <div ref={scrollToAnswer} className="container h-130 overflow-scroll">
           <div className="text-white ">
             <ul>
               {result.map((item, index) =>
