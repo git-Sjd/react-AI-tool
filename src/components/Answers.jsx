@@ -21,7 +21,7 @@ const Answers = ({ ans, ansLength, index }) => {
             ) : heading ? (
                 <span className="text-xl pb-2 ">{answer}</span>
             ) : (
-                <span className="pl-3 inline-block">{ans}</span>
+                <span className="px-3 inline-block">{ans}</span>
             )}
         </>
     );
