@@ -8,7 +8,9 @@ import QuestionsAnswers from "./components/QuestionsAnswers";
 function App() {
   const [question, setQuestion] = useState("");
   const [result, setResult] = useState([]);
-  const [recentHistory, setRecentHistory] = useState([]);
+  const [recentHistory, setRecentHistory] = useState(
+    JSON.parse(localStorage.getItem("history"))
+  );
   const [selectedHistory, setSelectedHistory] = useState("");
   const [loader, setLoader] = useState(false);
   const scrollToAnswer = useRef();

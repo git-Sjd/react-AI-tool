@@ -1,20 +1,30 @@
+import { useState } from "react";
+
 const RecentSearch = ({
   recentHistory,
   setRecentHistory,
   setSelectedHistory,
 }) => {
+  const [darkMode, setDarkMode] = useState("dark");
+
   const clearHistory = () => {
     localStorage.clear();
     setRecentHistory([]);
   };
 
+  console.log("darkMode", darkMode);
+
   return (
     <>
       <div className="col-span-1 bg-zinc-800">
-        <h1 className="text-xl text-white felx justify-between text-center my-5">
-          <span>Recent History</span>
-          <button onClick={clearHistory} className="ml-5 cursor-pointer">
+        <h1 className="text-xl text-white felx justify-center text-center my-5">
+          <span className="inline-block">Recent History</span>
+          <button
+            onClick={clearHistory}
+            className="ml-5 cursor-pointer inline-block"
+          >
             <svg
+              className=" inline-block"
               xmlns="http://www.w3.org/2000/svg"
               height="20px"
               viewBox="0 -960 960 960"
@@ -37,6 +47,14 @@ const RecentSearch = ({
               </li>
             ))}
         </ul>
+        <select
+          className="text-white fixed bottom-0 text-left p-5"
+          onChange={(event) => setDarkMode(event.target.value)}
+        >
+          <option value="dark">dark</option>
+          <option value="light">light</option>
+        </select>
+        {darkMode == "dark" ? "Hoha " : "KOAKA"}
       </div>
     </>
   );
