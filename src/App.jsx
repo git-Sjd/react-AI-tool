@@ -1,40 +1,49 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./App.css";
 import { URL } from "./utils/constant";
 import Answers from "./components/Answers";
+import RecentSearch from "./components/RecentSearch";
+import QuestionsAnswers from "./components/QuestionsAnswers";
 
 function App() {
   const [question, setQuestion] = useState("");
   const [result, setResult] = useState([]);
   const [recentHistory, setRecentHistory] = useState([]);
+  const [selectedHistory, setSelectedHistory] = useState("");
+  const [loader, setLoader] = useState(false);
   const scrollToAnswer = useRef();
 
-  const payload = {
-    contents: [
-      {
-        parts: [
-          {
-            text: question,
-          },
-        ],
-      },
-    ],
-  };
-
   const askQuestion = async () => {
-    if (!question) {
+    // console.log("--->", selectedHistory)
+    if (!question && !selectedHistory) {
       return false;
     }
-
-    if (localStorage.getItem("history")) {
-      let history = JSON.parse(localStorage.getItem("history"));
-      history = [question, ...history];
-      localStorage.setItem("history", JSON.stringify(history));
-      setRecentHistory(history);
-    } else {
-      localStorage.setItem("history", JSON.stringify([question]));
-      setRecentHistory([question]);
+    setLoader(true);
+    if (question) {
+      if (localStorage.getItem("history")) {
+        let history = JSON.parse(localStorage.getItem("history"));
+        history = [question, ...history];
+        localStorage.setItem("history", JSON.stringify(history));
+        setRecentHistory(history);
+      } else {
+        localStorage.setItem("history", JSON.stringify([question]));
+        setRecentHistory([question]);
+      }
     }
+
+    const payLoadData = question ? question : selectedHistory;
+
+    const payload = {
+      contents: [
+        {
+          parts: [
+            {
+              text: payLoadData,
+            },
+          ],
+        },
+      ],
+    };
 
     let response = await fetch(
       URL + "AIzaSyAthYlH92j0PiGRan4Fwd4MbXY6Aw9SKkg",
@@ -48,92 +57,74 @@ function App() {
     let rawData = response.candidates[0].content.parts[0].text;
     rawData = rawData.split("* ");
     let refinedData = rawData.map((item, index) => item.trim());
+
     // console.log("refinedData: -->", refinedData);
     setResult([
       ...result,
-      { type: "qsn", qsnText: question },
+      { type: "qsn", qsnText: question ? question : selectedHistory },
       { type: "ans", ansText: refinedData },
     ]);
     setQuestion("");
+
+    setLoader(false);
 
     setTimeout(() => {
       scrollToAnswer.current.scrollTop = scrollToAnswer.current.scrollHeight;
     }, 1000);
   };
 
-  const clearHistory = () => {
-    localStorage.clear();
-    setRecentHistory([]);
-  };
-
   const isEnterKey = (event) => {
-    console.log("--->", event.key);
+    // console.log("--->", event.key);
     if (event.key == "Enter") {
       askQuestion();
       // setQuestion()
     }
   };
 
-  // console.log("-->", result);
+  useEffect(() => {
+    // console.log("-->", selectedHistory);
+    askQuestion();
+  }, [selectedHistory]);
 
   return (
     <div className="grid grid-cols-5 h-screen text-center">
-      <div className="col-span-1 bg-zinc-800">
-        <h1 className="text-xl text-white felx justify-between text-center my-5">
-          <span>Recent History</span>
-          <button onClick={clearHistory} className="ml-5 cursor-pointer">
+      <RecentSearch
+        recentHistory={recentHistory}
+        setRecentHistory={setRecentHistory}
+        setSelectedHistory={setSelectedHistory}
+      />
+
+      <div className="col-span-4 px-2 py-4">
+        <div>
+          <h1 className="text-4xl pb-2 bg-clip-text text-transparent bg-gradient-to-r from-pink-700 to-violet-800">
+            Hello User, Ask me Anything
+          </h1>
+        </div>
+        {loader ? (
+          <div role="status" className="pb-2">
             <svg
+              aria-hidden="true"
+              className="inline w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-purple-600"
+              viewBox="0 0 100 101"
+              fill="none"
               xmlns="http://www.w3.org/2000/svg"
-              height="20px"
-              viewBox="0 -960 960 960"
-              width="20px"
-              fill="#e3e3e3"
             >
-              <path d="M312-696v480-480Zm139 552H312q-29.7 0-50.85-21.15Q240-186.3 240-216v-480h-48v-72h192v-48h192v48h192v72h-48v149q-18-3-36-4.5t-36 .5v-145H312v479.63h106.17Q423-197 431.5-179q8.5 18 19.5 35Zm-67-144h24q0-70 24-111l24-41v-184h-72v336Zm120-204q14-11 32.5-22.5T576-534v-90h-72v132ZM671.77-96Q592-96 536-152.23q-56-56.22-56-136Q480-368 536.23-424q56.22-56 136-56Q752-480 808-423.77q56 56.22 56 136Q864-208 807.77-152q-56.22 56-136 56ZM727-199l34-34-65-65v-86h-48v106l79 79Z" />
+              <path
+                d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                fill="currentColor"
+              />
+              <path
+                d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                fill="currentFill"
+              />
             </svg>
-          </button>
-        </h1>
-        <ul className="text-sm text-left overflow-auto mt-5">
-          {recentHistory.map((hisItem, hisIndex) => (
-            <li className="truncate text-zinc-400 hover:bg-zinc-600 hover:text-zinc-400 cursor-pointer pl-3 my-1">
-              {hisIndex + 1 + "." + " " + hisItem}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="col-span-4 p-10">
+            <span className="sr-only">Loading...</span>
+          </div>
+        ) : null}
         <div ref={scrollToAnswer} className="container h-130 overflow-scroll">
-          <div className="text-white ">
-            <ul>
-              {result.map((item, index) =>
-                item.type == "qsn" ? (
-                  <li
-                    key={index}
-                    className="text-zinc-300 text-right mx-2  mt-2 font-semibold border-5 bg-zinc-700
-                     border-zinc-700 w-fit rounded-tr-2xl rounded-br-2xl rounded-bl-2xl"
-                  >
-                    <Answers
-                      ans={item.qsnText}
-                      index={index}
-                      ansLength={item.length}
-                    />
-                  </li>
-                ) : (
-                  item.ansText.map((ansItem, ansIndex) => (
-                    <li className="text-left ml-2 mt-2 text-neutral-200">
-                      <Answers
-                        ans={ansItem}
-                        index={ansIndex}
-                      // ansLength={ansItem.length}
-                      />
-                    </li>
-                  ))
-                )
-              )}
-            </ul>
+          <QuestionsAnswers result={result} />
 
-            {/* <ul>
+          {/* <ul>
               {result &&
                 result.map((item, index) => (
                   <li key={index} className="text-left ml-2 mt-2">
@@ -141,7 +132,6 @@ function App() {
                   </li>
                 ))}
             </ul> */}
-          </div>
         </div>
 
         <div className="flex bg-zinc-800 w-1/2 mt-5 m-auto text-white rounded-4xl p-1 pr-5 border border-zinc-700 h-16">
