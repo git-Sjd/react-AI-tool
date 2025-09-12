@@ -9,7 +9,7 @@ const QuestionsAnswers = ({ result }) => {
             item.type == "qsn" ? (
               <li
                 key={index}
-                className="text-zinc-300 text-right mx-2 mt-4 font-semibold border-5 bg-zinc-700
+                className="dark:text-zinc-300  text-right mx-2 mt-4 font-semibold border-5 bg-zinc-700
                            border-zinc-700 w-fit rounded-tr-2xl rounded-br-2xl rounded-bl-2xl"
               >
                 <Answers
@@ -22,7 +22,7 @@ const QuestionsAnswers = ({ result }) => {
               item.ansText.map((ansItem, ansIndex) => (
                 <li
                   key={ansIndex}
-                  className="text-left ml-2 mt-2 text-neutral-200"
+                  className="text-left ml-2 mt-2 dark:text-neutral-200 text-zinc-800"
                 >
                   <Answers
                     ans={ansItem}

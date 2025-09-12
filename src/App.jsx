@@ -14,6 +14,7 @@ function App() {
   const [selectedHistory, setSelectedHistory] = useState("");
   const [loader, setLoader] = useState(false);
   const scrollToAnswer = useRef();
+  const [darkMode, setDarkMode] = useState("dark");
 
   const askQuestion = async () => {
     // console.log("--->", selectedHistory)
@@ -88,15 +89,52 @@ function App() {
     askQuestion();
   }, [selectedHistory]);
 
+  useEffect(() => {
+    if (darkMode == "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [darkMode]);
+
   return (
     <div className="grid grid-cols-5 h-screen text-center">
-      <RecentSearch
-        recentHistory={recentHistory}
-        setRecentHistory={setRecentHistory}
-        setSelectedHistory={setSelectedHistory}
-      />
+      <div
+        className={`col-span-1 ${
+          darkMode == "dark" ? "bg-zinc-800" : "bg-zinc-200"
+        }`}
+      >
+        <div className="h-130 overflow-scroll">
+          <RecentSearch
+            recentHistory={recentHistory}
+            setRecentHistory={setRecentHistory}
+            setSelectedHistory={setSelectedHistory}
+            darkMode={darkMode}
+          />
+        </div>
+        <div>
+          <div className=" p-6  mx-auto mt-6">
+            <label className="block text-lg font-semibold dark:text-white text-zinc-800 mb-3">
+              Theme Mode
+            </label>
+            <select
+              className="w-full p-3 rounded-xl bg-zinc-900 text-white border border-zinc-700 
+               focus:ring-2 focus:ring-zinc-700 focus:outline-none cursor-pointer"
+              onChange={(event) => setDarkMode(event.target.value)}
+            >
+              <option value="dark">Dark Mode 🌙 </option>
+              <option value="light">Light Mode ☀️</option>
+            </select>
+            <h1 className="text-sm dark:text-white text-zinc-800 mt-4">
+              For best experience, choose{" "}
+              <span className="font-bold dark:text-yellow-300">Dark Mode</span>{" "}
+              ✨
+            </h1>
+          </div>
+        </div>
+      </div>
 
-      <div className="col-span-4 px-2 py-4">
+      <div className="col-span-4 px-2 py-4 dark:bg-zinc-900 bg-zinc-300">
         <div>
           <h1 className="text-4xl pb-2 bg-clip-text text-transparent bg-gradient-to-r from-pink-700 to-violet-800">
             Hello User, Ask me Anything
@@ -136,7 +174,7 @@ function App() {
             </ul> */}
         </div>
 
-        <div className="flex bg-zinc-800 w-1/2 mt-5 m-auto text-white rounded-4xl p-1 pr-5 border border-zinc-700 h-16">
+        <div className="flex dark:bg-zinc-800 bg-zinc-400 w-1/2 mt-5 m-auto dark:text-white text-zinc-100 rounded-4xl p-1 pr-5 border border-zinc-700 h-16">
           <input
             type="text"
             value={question}
