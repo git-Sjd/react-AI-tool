@@ -15,7 +15,9 @@ const RecentSearch = ({
     <>
       <div className="">
         <h1 className="text-xl dark:text-white text-zinc-800 justify-center text-center my-5">
-          <span className="inline-block">Recent History</span>
+          <span className="inline-block font-semibold font-robo">
+            Last 25 Recent History
+          </span>
           <button
             onClick={clearHistory}
             className="ml-5 cursor-pointer inline-block"

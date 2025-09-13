@@ -127,7 +127,7 @@ function App() {
 
       <div className="col-span-4 px-2 py-4 dark:bg-zinc-900 bg-zinc-300">
         <div>
-          <h1 className="text-4xl font-bold pb-2 bg-clip-text text-transparent bg-gradient-to-r from-pink-700 to-violet-800">
+          <h1 className="font-mono text-4xl font-bold pb-2 bg-clip-text text-transparent bg-gradient-to-r from-pink-700 to-violet-800">
             Hello User, Ask me Anything
           </h1>
         </div>

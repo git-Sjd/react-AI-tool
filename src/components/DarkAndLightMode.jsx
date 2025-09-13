@@ -1,7 +1,7 @@
 const DarkAndLightMode = ({ setDarkMode }) => {
   return (
-    <div className=" p-6  mx-auto mt-6">
-      <label className="block text-lg font-semibold dark:text-white text-zinc-800 mb-3">
+    <div className=" p-6  mx-auto mt-6 font-robo">
+      <label className="block text-lg font-bold dark:text-white text-zinc-800 mb-3">
         Theme Mode
       </label>
       <select
