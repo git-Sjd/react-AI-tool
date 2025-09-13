@@ -44,7 +44,9 @@ const Answers = ({ ans, ansLength, index }) => {
         <span className="text-xl pb-2 ">{answer}</span>
       ) : (
         <span className="px-3 inline-block">
-          <ReactMarkdown components={codeRenderer}>{ans}</ReactMarkdown>
+          <ReactMarkdown components={codeRenderer}>
+            {ans.charAt(0).toUpperCase() + ans.slice(1)}
+          </ReactMarkdown>
         </span>
       )}
     </>
