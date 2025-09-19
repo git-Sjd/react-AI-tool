@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import "./App.css";
 import { URL } from "./utils/constant";
-import Answers from "./components/Answers";
 import RecentSearch from "./components/RecentSearch";
 import QuestionsAnswers from "./components/QuestionsAnswers";
 import DarkAndLightMode from "./components/DarkAndLightMode";
@@ -18,7 +17,6 @@ function App() {
   const [darkMode, setDarkMode] = useState("dark");
 
   const askQuestion = async () => {
-    // console.log("--->", selectedHistory)
     if (!question && !selectedHistory) {
       return false;
     }
@@ -69,7 +67,6 @@ function App() {
     rawData = rawData.split("* ");
     let refinedData = rawData.map((item, index) => item.trim());
 
-    // console.log("refinedData: -->", refinedData);
     setResult([
       ...result,
       { type: "qsn", qsnText: question ? question : selectedHistory },
@@ -85,7 +82,6 @@ function App() {
   };
 
   const isEnterKey = (event) => {
-    // console.log("--->", event.key);
     if (event.key == "Enter") {
       askQuestion();
       // setQuestion()
@@ -93,7 +89,6 @@ function App() {
   };
 
   useEffect(() => {
-    // console.log("-->", selectedHistory);
     askQuestion();
   }, [selectedHistory]);
 
